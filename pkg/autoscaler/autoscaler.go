@@ -344,6 +344,17 @@ var _ = Describe("Autoscaler should", framework.LabelAutoscaler, Serial, func() 
 					workloadArch = arch
 					expectedScaledMachineSet = machineSet
 				}
+
+				It("should have expected upstream annotations", func() {
+					//checking for the newly added upstream annotations from the CAO
+					expectedAnnotations := map[string]string{
+						"machine.openshift.io/vCPU":     "",
+						"machine.openshift.io/memoryMb": "",
+						"machine.openshift.io/GPU":      "",
+					}
+
+					Expect(machineSet.Annotations).To(HaveValue(Equal(expectedAnnotations)))
+				})
 			}
 			uniqueJobName := fmt.Sprintf("%s-scale-from-zero", workloadJobName)
 			By(fmt.Sprintf("Creating scale-out workload %s: jobs: %v, memory: %s", uniqueJobName,
